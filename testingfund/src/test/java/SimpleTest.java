@@ -3,12 +3,16 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class SimpleTest {
     private static WebDriver driver;
@@ -23,9 +27,13 @@ public class SimpleTest {
     String returnToLoginUrl = "https://profile.w3schools.com/";
 
     @BeforeClass
-    public void setUp() {
+    @Parameters("browser")
+    public void setUp(String browser) throws MalformedURLException {
         System.setProperty(driverProperty,driverPath);
-        driver = new ChromeDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setBrowserName(browser);
+        driver = new RemoteWebDriver(new URL("https://localhost:4444/"), caps);
+//        driver = new ChromeDriver();
         driver.get(url_main);
         mainPage = new MainPage(driver);
         loginPage = new LoginPage(driver);
